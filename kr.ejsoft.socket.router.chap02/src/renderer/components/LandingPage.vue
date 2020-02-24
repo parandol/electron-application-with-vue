@@ -11,8 +11,10 @@
         <div class="doc" style="margin-top:16px;">
           <div class="title alt">IPC(Inter-Process Communication)</div>
           <p>
+            <div>{{ responseMessage }}</div>
             <div>{{ pushMessage }} </div>
           </p>
+          <button class="alt" @click="sendMessage">Send message to Main Process</button>
         </div>
       </div>
 
