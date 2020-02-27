@@ -14,15 +14,6 @@ let router = new Router({
       component: require('@/views/MainPage').default
     },
     {
-        path: "/preferences",
-        name: "preferences-page",
-        meta: {
-            layout: "dialog",
-            title : "Preferences"
-        },
-        component: require("@/views/Preperences").default
-    },
-    {
       path: '/landing',
       name: 'landing-page',
       component: require('@/components/LandingPage').default

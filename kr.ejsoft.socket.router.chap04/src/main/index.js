@@ -1,7 +1,6 @@
 import { app, ipcMain } from 'electron'
 import MainWindow from './window/main-window'
 
-import PreferencesManager from "./window/preferences-window";
 import launchTCPRouter from './shared/tcp-router-launcher'
 // const TCPRouterManager = require('./core/tcp-router-manager'); 
 
@@ -12,47 +11,8 @@ function init() {
     mainWindow = null
   });
 
-
-
-  // // 환경설정 관리자
-  app.preference = PreferencesManager.getInstance(mainWindow);
-
-  launchTCPRouter();
-  
-  // // const prefs = PreferencesManager.getInstance().get();
-  // ipcMain.on("open-configuration", (event, args) => {
-  //   // console.log(args);
-  //   PreferencesManager.show();
-  // });
-
-
-  // ipcMain.on("request-message", (event, args) => {
-  //   console.log(args);
-  //   event.sender.send("response-message", "This is a Server Message.");
-  // });
-
-  // let pushIndex = 0;
-  // let pushRenderer = null;
-  // // let timer = null;
-  // ipcMain.on("push-ipc-init", (event, args) => {
-  //   // console.log(args);
-  //   pushRenderer = event.sender;
-    
-  //   if(!timer) {
-  //     timer = setInterval(() => {
-  //       pushIndex++;
-  //       if(pushRenderer) {
-  //         pushRenderer.send("push-ipc-message", "Push message at " + pushIndex);
-  //       }
-  //     }, 1000);
-  //   }
-  //   // event.sender.send("push-ipc-init-res", "Initialize successfully..");
-  // });
-  // ipcMain.once("push-ipc-end", (event, args) => {
-  //   // console.log(args);
-  //   if(timer) clearInterval(timer);
-  //   // event.sender.send("push-ipc-end-res", "Terminate successfully..");
-  // });
+  // launchTCPRouter();
+  TCPRouterLauncher.getInstance().execute();
 }
 
 app.on('ready', init)
