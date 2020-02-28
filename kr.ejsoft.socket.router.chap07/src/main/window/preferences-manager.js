@@ -119,6 +119,7 @@ export default (() => {
                 modal: true,
                 width: 600,
                 height: 400,
+                title: 'Preferences',
                 // frame: false,
                 resizable: false,
                 minimizable: false,

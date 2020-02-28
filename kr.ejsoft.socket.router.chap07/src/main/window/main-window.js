@@ -23,6 +23,7 @@ class MainWindow {
         let window = new BrowserWindow({
             width: 800,
             height: 540,
+            title: 'TCP Socket Router',
             useContentSize: true,
             icon: appicon,
             resizable: false,
@@ -45,17 +46,17 @@ class MainWindow {
             }
         });
 
-        window.on('resize', () => {
-            const size = window.getSize();
-            const width = size[0];
-            const height = size[1];
-            const maximized = window.isMaximized();
-            // console.log("width: " + width);
-            // console.log("height: " + height);
-            window.webContents.send("window-resized", {
-                windowid, maximized, width, height
-            });
-        });
+        // window.on('resize', () => {
+        //     const size = window.getSize();
+        //     const width = size[0];
+        //     const height = size[1];
+        //     const maximized = window.isMaximized();
+        //     // console.log("width: " + width);
+        //     // console.log("height: " + height);
+        //     window.webContents.send("window-resized", {
+        //         windowid, maximized, width, height
+        //     });
+        // });
 
         // https://stackoverflow.com/questions/37828758/electron-js-how-to-minimize-close-window-to-system-tray-and-restore-window-back
         window.on('minimize', (event) => {
@@ -91,8 +92,6 @@ class MainWindow {
             // }
             // app.windows.delete(window.windowid);
         });
-
-
 
         this.mainWindow = window;
     }
