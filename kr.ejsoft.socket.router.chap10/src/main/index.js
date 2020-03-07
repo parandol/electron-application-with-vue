@@ -4,10 +4,10 @@ import createMainMenu from './window/main-menu'
 import SystemTray from './window/tray-manager'
 import PreferencesManager from "./window/preferences-manager";
 import TCPRouterLauncher from './shared/tcp-router-launcher';
+import AppUpdater from './shared/app-updater';
 
 import FontAwesomeWindow from './window/font-awesome';
 
-const autoUpdater = require('electron-updater').autoUpdater
 
 let mainWindow = null;
 let mainContents;
@@ -39,9 +39,10 @@ function init() {
     }
 
     
-    mainContents = mainWindow.webContents
     // mainContents.openDevTools()
-    autoUpdater.checkForUpdates()
+    // console.log(mainWindow);
+    // console.log(mainWindow.webContents);
+    AppUpdater.init(mainWindow)
 }
 
 app.on('ready', init)
@@ -83,32 +84,3 @@ app.on('ready', () => {
     if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates()
 })
  */
-
-autoUpdater.on('update-available', function () {
-    console.log('A new update is available')
-    mainContents.send('updater-message', 'A new update is available')
-})
-autoUpdater.on('checking-for-update', function () {
-    console.log('Checking-for-update')
-    mainContents.send('updater-message', 'Checking for Update..')
-})
-autoUpdater.on('error', function (error) {
-    console.log('error')
-    console.error(error)
-    mainContents.send('updater-message', 'Got Error')
-})
-autoUpdater.on('download-progress', function (bytesPerSecond, percent, total, transferred) {
-    console.log(`${bytesPerSecond}, ${percent}, ${total}, ${transferred}`)
-    mainContents.send('updater-message', `download progress : ${bytesPerSecond}, ${percent}, ${total}, ${transferred}`)
-})
-autoUpdater.on('update-downloaded', function (event) {
-    console.log('update-downloaded')
-    console.log(event)
-    mainContents.send('updater-message', 'update-downloaded')
-    autoUpdater.quitAndInstall()
-})
-  
-autoUpdater.on('update-not-available', function () {
-    console.log('update-not-available')
-    mainContents.send('updater-message', 'update-not-available')
-})

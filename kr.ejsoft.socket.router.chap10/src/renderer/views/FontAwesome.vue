@@ -3,7 +3,7 @@
     <DialogHeader name="fontawesome"></DialogHeader>
     <b-tabs card>
       <template v-for="(icons, index) in icons">
-        <b-tab no-body :title="icons.title" :active="index === 0">
+        <b-tab no-body :title="icons.title" :active="index === 0" :key="index">
           <FontAwesomeIcons :icons="icons" />
         </b-tab>
       </template>
@@ -106,13 +106,8 @@ export default {
   created() {
   },
   mounted() {
+    document.body.classList.add("over-y-auto");
   }
 };
 </script>
 
-<style>
-body {
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-</style>
