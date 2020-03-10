@@ -1,9 +1,10 @@
 <template>
+  <div class="h-100">
   <b-card no-body class="h-100 main-wrapper" @click="clearActiveItem">
     <DialogHeader name="main"></DialogHeader>
-    <b-card-body>
+    <b-card-body style="margin-bottom:70px;">
     <div class="row h-100">
-      <div class="col-md-6">
+      <div class="col-md-6 h-100">
         <b-card no-body class="h-100">
           <b-card-header>TCP Router Connections</b-card-header>
           <b-card-body>
@@ -23,7 +24,7 @@
         </b-card>
       </div>
 
-      <div class="col-md-6" v-if="selectedItem && selectedState">
+      <div class="col-md-6 h-100" v-if="selectedItem && selectedState">
         <b-card no-body class="h-100">
           <b-card-header>Connection Details</b-card-header>
           <b-card-body>
@@ -45,7 +46,7 @@
         </b-card>
       </div>
 
-      <div class="col-md-6" v-show="!selectedItem">
+      <div class="col-md-6 h-100" v-show="!selectedItem">
         <b-card no-body class="h-100">
           <b-card-header>Event Log</b-card-header>
           <b-card-body>
@@ -64,15 +65,25 @@
       <div class="col-md-5 text-left">
         <b-button pill variant="primary" @click="handleStartup"><b-icon icon="play" font-scale="2" class="align-middle"></b-icon> Start</b-button>
         <b-button pill variant="secondary" @click="handleShutdown"><b-icon icon="stop" font-scale="2" class="align-middle"></b-icon> Shutdown</b-button>
+        
       </div>
       <div class="col-md-7 text-right">
         <b-button pill variant="info" @click="handleFontawesome"><b-icon icon="bootstrap" font-scale="2" class="align-middle"></b-icon></b-button>
+        <!-- <b-button pill variant="info" @click="handleUpdateNow"><b-icon icon="cloud-download" font-scale="2" class="align-middle"></b-icon></b-button> -->
         <b-button pill variant="warning" @click="handleClearLog"><b-icon icon="trash" font-scale="2" class="align-middle"></b-icon> Clear Log</b-button>
         <b-button pill variant="success" @click="handlePreferences"><b-icon icon="gear" font-scale="2" class="align-middle"></b-icon> Preferences</b-button>
       </div>
     </div>
     </b-card-footer>
   </b-card>
+  
+  <UpdateToast
+    :auto-check="preferences.update.autoCheck"
+    :auto-download="preferences.update.autoDownload"
+    :auto-install="preferences.update.autoInstall"
+    v-if="preferences.update.autoUpdateUI"
+  ></UpdateToast>
+  </div>
 </template>
 
 <script>
@@ -80,6 +91,7 @@ import { ipcRenderer, remote } from 'electron'
 //const { remote } = require('electron')
 // import { DialogHeader } from '../components/DialogHeader'
 const DialogHeader = require('../components/DialogHeader').default;
+const UpdateToast = require('../components/UpdateToast').default;
 
 const { Menu, MenuItem } = remote
 
@@ -95,21 +107,46 @@ const { Menu, MenuItem } = remote
 export default {
   name: 'main-page',
   components: {
-    DialogHeader
+    DialogHeader, UpdateToast
   },
   data() {
     return {
       isDarwin : process.platform === "darwin",
       maximized: false,
 
+      preferences: {
+        update:{
+          autoUpdateUI: true,
+          autoCheck: false,
+          autoDownload: false,
+          autoInstall: false,
+        }
+      },
+
       tcpRouterState: {},
       activeItem: {},
       selectedItem: null,
       selectedState: null,
       logs: [],
+
     }
   },
   created() {
+    ipcRenderer.on("response-preferences", (event, args) => {
+      // console.log(args);
+      for(const key in args) {
+        this.preferences[key] = args[key];
+      };
+    });
+    // ipcRenderer.on("changed-preferences", (event, args) => {
+    //   // console.log(args);
+    //   for(const key in args) {
+    //     this.preferences[key] = args[key];
+    //   };
+    // });
+    
+    ipcRenderer.send("request-preferences");
+
     // TCP Socket Router State
     ipcRenderer.on("tcp-router-state", (event, args) => {
       // console.log(args);
@@ -124,7 +161,7 @@ export default {
 
     // TCP Socket Event Log
     ipcRenderer.on("tcp-router-log", (event, log) => {
-      console.log(log);
+      // console.log(log);
       this.addLog(log);
     });
 
@@ -151,6 +188,8 @@ export default {
     }, false)
   },
   mounted() {
+
+    
   },
   destroyed() {
     // Destroy ipcRenderer
@@ -160,36 +199,10 @@ export default {
     open (link) {
       this.$electron.shell.openExternal(link)
     },
-    handleMinimize(e) {
-        const window = remote.getCurrentWindow();
-        // if(this.layout === "main" && this.prefs.common && this.prefs.common.minimizeToTray === true) {
-        //     // console.log("main page minimized...");
-        //     window.hide();
-        // } else {
-        window.minimize();
-        // }
+    handleUpdateNow() {
+      // console.log("handleUpdateNow..................")
+      ipcRenderer.send("update-check-now", "");
     },
-    handleMaximize(e) {
-        const window = remote.getCurrentWindow();
-        if (!window.isMaximized()) {
-            this.maximized = true;
-            window.maximize();
-        } else {
-            this.maximized = false;
-            window.unmaximize();
-        }
-    },
-    handleClose(e) {
-        const window = remote.getCurrentWindow();
-        // console.log(prefs);
-        // if(this.layout === "main" && this.prefs.common && this.prefs.common.closeToTray === true) {
-        //     // console.log("main page closed...");
-        //     window.hide();
-        // } else {
-        window.close();
-        // }
-    },
-
     setActiveItem(key) {
       // console.log(JSON.stringify(this.activeItem));
       // if (this.activeItem[item]) {
@@ -275,8 +288,8 @@ export default {
 .items, .details, .logs {
   overflow: auto;
   overflow-x: hidden;
-  height: 320px;
-  max-height: 320px;
+  height: 300px;
+  max-height: 300px;
 }
 .details, .logs {
   margin: 0;
@@ -291,39 +304,18 @@ export default {
 .items > .item.selected {
   border: 1px solid #101113;
 }
-/* 
-.main-wrapper {
-  position: relative;
-  height: 100%;
-  width: 100%
-}
-.main-wrapper:after {
-  content : "";
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  background-image: url('~@/assets/apps.png'); 
-  background-repeat: no-repeat;
-  background-position: center;
-  opacity:0.25!important;
-  filter:alpha(opacity=25);
-  z-index: -1;
-} */
-
 .item .name, .details .name {
   font-weight: bold;
 }
-
 .item .value, .details .value {
   margin-left: 10px;
   font-size: 0.9em;
 }
-
 .logs .log {
   white-space: nowrap;
   font-size: 0.9em;
+}
+body {
+  overflow: hidden;
 }
 </style>

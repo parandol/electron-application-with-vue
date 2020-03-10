@@ -59,7 +59,13 @@ export default (() => {
                     //     host : "127.0.0.1",
                     //     port : 9090
                     // }
-                ]
+                ],
+                update: {
+                    autoUpdateUI: true,
+                    autoCheck: false,
+                    autoDownload: false,
+                    autoInstall: false,
+                }
             }, {
                 // encrypt: true
             });

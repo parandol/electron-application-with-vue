@@ -19,7 +19,7 @@ const winURL = process.env.NODE_ENV === 'development'
 const appicon = CommonUtils.icon(64);
 const style = {
     width: 800,
-    height: 550,
+    height: 560,
     useContentSize: true,
     icon: appicon,
     frame: false,

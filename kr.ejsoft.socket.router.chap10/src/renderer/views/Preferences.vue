@@ -74,6 +74,19 @@
           </b-card>
         </b-card-group>
       </b-tab>
+      <b-tab>
+        <template v-slot:title>
+          <b-icon icon='cloud-download' font-scale='1.5'></b-icon> Update
+        </template>
+        <b-card-body>
+          <b-form-group label="Update Options:">
+            <b-form-checkbox name="autoUpdateUI" id="autoUpdateUI" v-model="preferences.update.autoUpdateUI">Check for updates automatically at program startup.</b-form-checkbox>
+            <b-form-checkbox name="autoCheck" id="autoCheck" v-model="preferences.update.autoCheck">Automatically check the update version.</b-form-checkbox>
+            <b-form-checkbox name="autoDownload" id="autoDownload" v-model="preferences.update.autoDownload">Automatically download new updates.</b-form-checkbox>
+            <b-form-checkbox name="autoInstall" id="autoInstall" v-model="preferences.update.autoInstall">Installs automatically when the download is complete.</b-form-checkbox>
+          </b-form-group>
+        </b-card-body>
+      </b-tab>
     </b-tabs>
     <b-card-footer class="text-right">
       <b-button @click="handleSave" variant="primary" pill><b-icon icon="check-circle" font-scale="1.5" class="align-middle"></b-icon> Save</b-button>
@@ -107,18 +120,28 @@ export default {
           minimizeToTray: false,
           closeToTray: false,
         },
-        routers:[]
+        routers:[],
+        update: {
+          autoUpdateUI: true,
+          autoCheck: false,
+          autoDownload: false,
+          autoInstall: false,
+        }
       },
     }
   },
   created() {
     ipcRenderer.on("response-preferences", (event, args) => {
       // console.log(args);
-      this.preferences = args;
+      for(const key in args) {
+        this.preferences[key] = args[key];
+      };
     });
     ipcRenderer.on("changed-preferences", (event, args) => {
       // console.log(args);
-      this.preferences = args;
+      for(const key in args) {
+        this.preferences[key] = args[key];
+      };
     });
     
     ipcRenderer.send("request-preferences");

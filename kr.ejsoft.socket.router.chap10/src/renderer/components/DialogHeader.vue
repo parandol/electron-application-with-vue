@@ -41,7 +41,7 @@ export default {
 
 
     ipcRenderer.once("window-state", (event, args) => {
-      console.log(args);
+      // console.log(args);
       
       this.minimizable = args.minimizable;
       this.maximizable = args.maximizable;

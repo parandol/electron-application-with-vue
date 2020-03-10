@@ -4,7 +4,10 @@
 
 <script>
   export default {
-    name: 'kr.ejsoft.socket.router'
+    name: 'kr.ejsoft.socket.router',
+    created() {
+      document.body.classList.add("over-hidden");
+    }
   }
 </script>
 
@@ -17,7 +20,6 @@
 
 // @import 'node_modules/bootstrap/scss/bootstrap';
 @import 'node_modules/bootstrap-vue/src/index.scss';
-
 </style>
 <style>
   /* @import "assets/app.css"; */
@@ -30,14 +32,16 @@
   html, body, #app {
     margin: 0;
     height: 100%;
-    overflow: hidden;
     font-size: 0.9em;
   }
-  /* CSS */
-  /* @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
-
-
-  body { font-family: 'Source Sans Pro', sans-serif; }
- */
-
+  
+  body.over-hidden {
+    overflow: hidden;
+  }
+  body.over-x-auto {
+    overflow-x: auto;
+  }
+  body.over-y-auto {
+    overflow-y: auto;
+  }
 </style>

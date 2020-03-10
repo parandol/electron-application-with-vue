@@ -2,8 +2,7 @@
   <div class="flex flex-row flex-wrap">
     <h4 class="mx-3 my-2">{{ icons.title }}</h4>
     <template v-for="(icon, key) in icons.icons">
-      <div class="col-4 col-md-3 col-lg-2 col-xl-1 my-1 d-inline-block">
-
+      <div class="col-4 col-md-3 col-lg-2 col-xl-1 my-1 d-inline-block" :key="key">
         <template v-if="icons.type === 'bootstrap'">
           <b-card no-body>
             <b-card-body class="text-center">
