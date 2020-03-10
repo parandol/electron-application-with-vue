@@ -1,0 +1,4 @@
+provider: github
+owner: parandol
+repo: electron-application-with-vue
+updaterCacheDirName: kr.ejsoft.socket.router-updater
