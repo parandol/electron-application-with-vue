@@ -15,9 +15,9 @@
                 @click.prevent.stop="setActiveItem(key)"
               >
                 <div class="name"><font-awesome-icon :icon="['fas', 'bezier-curve']" /> {{ item.listen }}, <font-awesome-icon :icon="['fas', 'cloud']" /> {{item.host}}:{{item.port}}</div>
-                <div class="value"><font-awesome-icon :icon="['fas', 'link']" /> Connections : {{ item.count }}</div>
-                <div class="value"><font-awesome-icon :icon="['fas', 'download']" /> Read : {{ item.bytes.clientReadBytes }} bytes</div>
-                <div class="value"><font-awesome-icon :icon="['fas', 'upload']" /> Write : {{ item.bytes.clientWriteBytes }} bytes</div>
+                <div class="value"><font-awesome-icon :icon="['fas', 'link']" /> Connections : {{ item.count | currency }}</div>
+                <div class="value"><font-awesome-icon :icon="['fas', 'download']" /> Read : {{ item.bytes.clientReadBytes | currency }} bytes</div>
+                <div class="value"><font-awesome-icon :icon="['fas', 'upload']" /> Write : {{ item.bytes.clientWriteBytes | currency }} bytes</div>
               </div>
             </div>
           </b-card-body>
@@ -30,16 +30,22 @@
           <b-card-body>
             <div class="details overflow-y">
               <div class="name"><font-awesome-icon :icon="['fas', 'bezier-curve']" /> {{ selectedState.listen }}, <font-awesome-icon :icon="['fas', 'cloud']" /> {{selectedState.host}}:{{selectedState.port}}</div>
-              <div class="value"><font-awesome-icon :icon="['fas', 'link']" /> Connections : {{ selectedState.count }}</div>
-              <div class="value"><font-awesome-icon :icon="['fas', 'download']" /> Client Read : {{ selectedState.bytes.clientReadBytes }} bytes</div>
-              <div class="value"><font-awesome-icon :icon="['fas', 'upload']" /> Client Write : {{ selectedState.bytes.clientWriteBytes }} bytes</div>
-              <div class="value"><font-awesome-icon :icon="['fas', 'cloud-download-alt']" /> Server Read : {{ selectedState.bytes.serverReadBytes }} bytes</div>
-              <div class="value"><font-awesome-icon :icon="['fas', 'cloud-upload-alt']" /> Server Write : {{ selectedState.bytes.serverWriteBytes }} bytes</div>
+              <div class="value"><font-awesome-icon :icon="['fas', 'link']" /> Connections : {{ selectedState.count | currency }}</div>
+              <div class="value"><font-awesome-icon :icon="['fas', 'download']" /> Client Read : {{ selectedState.bytes.clientReadBytes | currency }} bytes</div>
+              <div class="value"><font-awesome-icon :icon="['fas', 'upload']" /> Client Write : {{ selectedState.bytes.clientWriteBytes | currency }} bytes</div>
+              <div class="value"><font-awesome-icon :icon="['fas', 'cloud-download-alt']" /> Server Read : {{ selectedState.bytes.serverReadBytes | currency }} bytes</div>
+              <div class="value"><font-awesome-icon :icon="['fas', 'cloud-upload-alt']" /> Server Write : {{ selectedState.bytes.serverWriteBytes | currency }} bytes</div>
 
               <div class="value" v-for="(detail, index) in selectedItem" :key="index">
                 <div class="name"><font-awesome-icon :icon="['fas', 'link']" /> {{ detail.address }} : {{ detail.port }}</div>
-                <div class="value"><font-awesome-icon :icon="['fas', 'download']" /> Client Read : {{ detail.clientReadBytes }} bytes / <font-awesome-icon :icon="['fas', 'upload']" /> Client Write : {{ detail.clientWriteBytes }} bytes</div>
-                <div class="value"><font-awesome-icon :icon="['fas', 'cloud-download-alt']" /> Server Read : {{ detail.serverReadBytes }} bytes / <font-awesome-icon :icon="['fas', 'cloud-upload-alt']" /> Server Write : {{ detail.serverWriteBytes }} bytes</div>
+                <div class="value">
+                  <font-awesome-icon :icon="['fas', 'download']" /> Client Read : {{ detail.clientReadBytes | currency }} bytes /
+                  <font-awesome-icon :icon="['fas', 'upload']" /> Client Write : {{ detail.clientWriteBytes | currency }} bytes
+                </div>
+                <div class="value">
+                  <font-awesome-icon :icon="['fas', 'cloud-download-alt']" /> Server Read : {{ detail.serverReadBytes | currency }} bytes /
+                  <font-awesome-icon :icon="['fas', 'cloud-upload-alt']" /> Server Write : {{ detail.serverWriteBytes | currency }} bytes
+                </div>
               </div>
             </div>
           </b-card-body>
@@ -78,6 +84,7 @@
   </b-card>
   
   <UpdateToast
+    ref="updateToast"
     :auto-check="preferences.update.autoCheck"
     :auto-download="preferences.update.autoDownload"
     :auto-install="preferences.update.autoInstall"
@@ -137,6 +144,8 @@ export default {
       for(const key in args) {
         this.preferences[key] = args[key];
       };
+
+      this.$refs.updateToast.updateProps();
     });
     // ipcRenderer.on("changed-preferences", (event, args) => {
     //   // console.log(args);
@@ -188,8 +197,9 @@ export default {
     }, false)
   },
   mounted() {
-
-    
+    if(this.autoCheck) {
+      this.handleUpdateNow();
+    }
   },
   destroyed() {
     // Destroy ipcRenderer

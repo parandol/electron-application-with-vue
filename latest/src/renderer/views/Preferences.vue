@@ -4,7 +4,7 @@
     <DialogHeader name="preferences"></DialogHeader>
 
     <b-tabs card>
-      <b-tab active>
+      <b-tab active title-item-class="mr-1">
         <template v-slot:title>
           <b-icon icon='play' font-scale='1.5'></b-icon> Common
         </template>
@@ -27,7 +27,7 @@
           -->
         </b-card-body>
       </b-tab>
-      <b-tab title="TCP Router">
+      <b-tab title="TCP Router" title-item-class="mr-1">
         <template v-slot:title>
           <b-icon icon='cloud' font-scale='1.5'></b-icon> TCP Router
         </template>
@@ -74,7 +74,7 @@
           </b-card>
         </b-card-group>
       </b-tab>
-      <b-tab>
+      <b-tab title-item-class="mr-1">
         <template v-slot:title>
           <b-icon icon='cloud-download' font-scale='1.5'></b-icon> Update
         </template>

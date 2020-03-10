@@ -53,7 +53,13 @@ Vue.filter('prettyBytes', function (num) {
   
     return (neg ? '-' : '') + num + ' ' + unit;
 });
-
+Vue.filter('currency', function (num) {
+    // jacked from: https://github.com/sindresorhus/pretty-bytes
+    if (typeof num !== 'number' || isNaN(num)) {
+      throw new TypeError('Expected a number');
+    }
+    return num.toFixed(0).replace(/(\d)(?=(\d{3})+(?:\.\d+)?$)/g, "$1,")
+});
 
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))

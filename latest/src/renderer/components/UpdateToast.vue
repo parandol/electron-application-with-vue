@@ -184,6 +184,12 @@ export default {
     }
   },
   methods: {
+    updateProps() {
+      // console.log("updateProps...");
+      if(this.autoCheck) {
+        this.handleCheckUpdateNow();
+      }
+    },
     open (link) {
       this.$electron.shell.openExternal(link)
     },
