@@ -11,11 +11,11 @@ export default (() => {
         
         execute(env, callback) {
             if(!TCPRouterManager.instance) return;
-            env.forEach(({listen, port, host}) => {
+            env.forEach(({name, listen, port, host}) => {
                 const key = listen + ":" + host + ":" + port;
 
                 try {
-                    const router = new TCPSocketRouter({listen, port, host});
+                    const router = new TCPSocketRouter({name, listen, port, host});
     
                     router.on("transfered", (bytes) => {
                         this.emit("transfered", {key, bytes});
@@ -70,6 +70,7 @@ export default (() => {
             for(const key in this.routers) {
                 if(!key) continue;
                 ret[key] = {
+                    name : this.routers[key].name,
                     listen : this.routers[key].listen,
                     host : this.routers[key].host,
                     port : this.routers[key].port,

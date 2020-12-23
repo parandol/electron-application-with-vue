@@ -16,7 +16,7 @@ export default (() => {
         icon: appicon,
         modal: true,
         width: 700,
-        height: 440,
+        height: 470,
         frame: false,
         resizable: false,
         minimizable: false,
