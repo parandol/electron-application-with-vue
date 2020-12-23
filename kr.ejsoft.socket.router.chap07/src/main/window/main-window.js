@@ -64,7 +64,7 @@ class MainWindow {
             if(prefs.common && prefs.common.minimizeToTray === true) {
                 event.preventDefault();
                 if(process.platform === "darwin") {
-                    window.minimize();
+                    window.hide();
                 } else {
                     window.hide();
                 }
@@ -76,7 +76,7 @@ class MainWindow {
             if(!app.isQuiting && prefs.common && prefs.common.closeToTray === true) {
                 event.preventDefault();
                 if(process.platform === "darwin") {
-                    window.minimize();
+                    window.hide();
                 } else {
                     window.hide();
                 }

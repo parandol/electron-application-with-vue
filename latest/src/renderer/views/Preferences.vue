@@ -236,9 +236,11 @@ export default {
   background-color: transparent;
 } */
 .items {
-  height: 280px;
-  max-height: 280px;
+  height: 270px;
+  max-height: 270px;
   padding: 10px;
+  overflow: auto;
+  overflow-x: hidden;
 }
 .items > .item {
   padding: 10px;

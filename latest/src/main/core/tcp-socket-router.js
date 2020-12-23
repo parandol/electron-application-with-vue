@@ -139,23 +139,25 @@ class TCPSocketRouter extends TCPSocketServer {
     }
 
     removeItem(connection) {
-        const clientSocket = connection.client;
-        const serverSocket = connection.server;
+        try {
+            const clientSocket = connection.client;
+            const serverSocket = connection.server;
 
-        const addr = clientSocket.remoteAddress;
-        var count = this.counts[addr]
-        if(count <= 1) {
-            delete this.counts[addr];
-        } else {
-            this.counts[addr]--;
-        }
+            const addr = clientSocket.remoteAddress;
+            var count = this.counts[addr]
+            if(count <= 1) {
+                delete this.counts[addr];
+            } else {
+                this.counts[addr]--;
+            }
 
-        this.connections[uuid] = null;
-        delete this.connections[uuid];
+            this.connections[uuid] = null;
+            delete this.connections[uuid];
 
-        // 원격지 서버와의 접속 종료
-        clientSocket.end();
-        serverSocket.end();
+            // 원격지 서버와의 접속 종료
+            clientSocket.end();
+            serverSocket.end();
+        } catch(e) {}
     }
 
     handleData(client, data) {
