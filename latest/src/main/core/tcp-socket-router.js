@@ -28,9 +28,10 @@ class TCPRouterClient extends TCPSocketClient {
 }
 
 class TCPSocketRouter extends TCPSocketServer {
-    constructor({listen, host, port}) {
+    constructor({name, listen, host, port}) {
         super({listen});
 
+        this.name = name;
         this.host = host;
         this.port = port;
         this.buffer = {};
@@ -131,6 +132,16 @@ class TCPSocketRouter extends TCPSocketServer {
         // );
 
         // 접속 클라이언트 정보를 업데이트
+        this.removeItem(connection);
+
+        this.emit("closed", this.count());
+        this.print();
+    }
+
+    removeItem(connection) {
+        const clientSocket = connection.client;
+        const serverSocket = connection.server;
+
         const addr = clientSocket.remoteAddress;
         var count = this.counts[addr]
         if(count <= 1) {
@@ -143,10 +154,8 @@ class TCPSocketRouter extends TCPSocketServer {
         delete this.connections[uuid];
 
         // 원격지 서버와의 접속 종료
+        clientSocket.end();
         serverSocket.end();
-
-        this.emit("closed", this.count());
-        this.print();
     }
 
     handleData(client, data) {
@@ -182,7 +191,7 @@ class TCPSocketRouter extends TCPSocketServer {
             const connection = this.connections[key];
             if(connection) {
                 // console.log("Client [%s], Sent : %d, Received : %d ", key, connection.sendBytes, connection.receiveBytes);
-                if(connection.server && connection.server) {
+                if(connection.client && connection.server) {
                     try {
                         // this.emit("log", "Client [" + key + "], Sent : " + connection.client.bytesRead + ", Received : "+ connection.server.bytesRead);
                         console.log("Client [%s], Sent : %d, Received : %d ", key, connection.client.bytesRead, connection.server.bytesRead);
@@ -207,16 +216,28 @@ class TCPSocketRouter extends TCPSocketServer {
         let serverWriteBytes = 0;
         let clientReadBytes = 0;
         let clientWriteBytes = 0;
+
+        const _this = this;
+        let removeItems = [];
         
         for(const key in this.connections) {
             try {
                 const conn = this.connections[key];
+                if(!this.isConnected(conn)) {
+                    removeItems.push(conn);
+                    continue;
+                }
+
                 serverReadBytes += conn.server.bytesRead || 0,
                 serverWriteBytes += conn.server.bytesWritten || 0,
                 clientReadBytes += conn.client.bytesRead || 0,
                 clientWriteBytes += conn.client.bytesWritten || 0
             } catch(e) { }
         }
+
+        removeItems.forEach((conn) => {
+            _this.removeItem(conn);
+        });
 
         return {
             serverReadBytes,
@@ -226,11 +247,28 @@ class TCPSocketRouter extends TCPSocketServer {
         };
     }
 
+    isConnected(conn) {
+        const clientSocket = conn.client;
+        const serverSocket = conn.server;
+        if(!clientSocket.connected || !serverSocket.connected) {
+            const addr = clientSocket.remoteAddress;
+            return false;
+        }
+        return true;
+    }
+
     details() {
+        const _this = this;
         let ret = [];
+        let removeItems = [];
         for(const key in this.connections) {
-            const conn = this.connections[key];
             try {
+                const conn = this.connections[key];
+                if(!this.isConnected(conn)) {
+                    removeItems.push(conn);
+                    continue;
+                }
+
                 ret.push({
                     address : conn.client.remoteAddress,
                     port : conn.client.remotePort,
@@ -241,6 +279,10 @@ class TCPSocketRouter extends TCPSocketServer {
                 });
             } catch(e) {}
         }
+        removeItems.forEach((conn) => {
+            _this.removeItem(conn);
+        });
+
         return ret;
     }
 

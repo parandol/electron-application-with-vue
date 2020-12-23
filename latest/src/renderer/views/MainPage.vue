@@ -14,10 +14,31 @@
                 :class="{'selected': activeItem[key]}"
                 @click.prevent.stop="setActiveItem(key)"
               >
-                <div class="name"><font-awesome-icon :icon="['fas', 'bezier-curve']" /> {{ item.listen }}, <font-awesome-icon :icon="['fas', 'cloud']" /> {{item.host}}:{{item.port}}</div>
-                <div class="value"><font-awesome-icon :icon="['fas', 'link']" /> Connections : {{ item.count | currency }}</div>
-                <div class="value"><font-awesome-icon :icon="['fas', 'download']" /> Read : {{ item.bytes.clientReadBytes | currency }} bytes</div>
-                <div class="value"><font-awesome-icon :icon="['fas', 'upload']" /> Write : {{ item.bytes.clientWriteBytes | currency }} bytes</div>
+                <div class="nodes">
+                  <div class="title">
+                    {{ item.name }}
+                  </div>
+                  <div class="name">
+                    <font-awesome-icon :icon="['fas', 'bezier-curve']" /> {{ item.listen }}
+                    , <font-awesome-icon :icon="['fas', 'cloud']" /> {{item.host}}:{{item.port}}
+                    , <font-awesome-icon :icon="['fas', 'link']" /> {{ item.count | currency }}
+                  </div>
+                  <div class="labels">
+                    <div class="bytes">{{ item.bytes.clientWriteBytes | prettyBytes }}</div>
+                    <div class="bytes">{{ item.bytes.serverReadBytes | prettyBytes }}</div>
+                  </div>
+                  <div>
+                    <b-icon icon="display" font-scale="2" class="node-icon align-middle"></b-icon>
+                    <b-icon icon="arrow-left-right" font-scale="2" class="node-icon align-middle"></b-icon>
+                    <b-icon icon="terminal" font-scale="2" class="node-icon align-middle"></b-icon>
+                    <b-icon icon="arrow-left-right" font-scale="2" class="node-icon align-middle"></b-icon>
+                    <b-icon icon="cloud" font-scale="2" class="node-icon align-middle"></b-icon>
+                  </div>
+                  <div class="labels">
+                    <div class="bytes">{{ item.bytes.clientReadBytes | prettyBytes }}</div>
+                    <div class="bytes">{{ item.bytes.serverWriteBytes | prettyBytes }}</div>
+                  </div>
+                </div>
               </div>
             </div>
           </b-card-body>
@@ -29,24 +50,94 @@
           <b-card-header>Connection Details</b-card-header>
           <b-card-body>
             <div class="details overflow-y">
-              <div class="name"><font-awesome-icon :icon="['fas', 'bezier-curve']" /> {{ selectedState.listen }}, <font-awesome-icon :icon="['fas', 'cloud']" /> {{selectedState.host}}:{{selectedState.port}}</div>
-              <div class="value"><font-awesome-icon :icon="['fas', 'link']" /> Connections : {{ selectedState.count | currency }}</div>
-              <div class="value"><font-awesome-icon :icon="['fas', 'download']" /> Client Read : {{ selectedState.bytes.clientReadBytes | currency }} bytes</div>
-              <div class="value"><font-awesome-icon :icon="['fas', 'upload']" /> Client Write : {{ selectedState.bytes.clientWriteBytes | currency }} bytes</div>
-              <div class="value"><font-awesome-icon :icon="['fas', 'cloud-download-alt']" /> Server Read : {{ selectedState.bytes.serverReadBytes | currency }} bytes</div>
-              <div class="value"><font-awesome-icon :icon="['fas', 'cloud-upload-alt']" /> Server Write : {{ selectedState.bytes.serverWriteBytes | currency }} bytes</div>
-
-              <div class="value" v-for="(detail, index) in selectedItem" :key="index">
-                <div class="name"><font-awesome-icon :icon="['fas', 'link']" /> {{ detail.address }} : {{ detail.port }}</div>
-                <div class="value">
-                  <font-awesome-icon :icon="['fas', 'download']" /> Client Read : {{ detail.clientReadBytes | currency }} bytes /
-                  <font-awesome-icon :icon="['fas', 'upload']" /> Client Write : {{ detail.clientWriteBytes | currency }} bytes
+              <div class="nodes">
+                <div class="title">
+                  {{ selectedState.name }}
+                  , <font-awesome-icon :icon="['fas', 'link']" /> {{ selectedState.count | currency }}
                 </div>
-                <div class="value">
-                  <font-awesome-icon :icon="['fas', 'cloud-download-alt']" /> Server Read : {{ detail.serverReadBytes | currency }} bytes /
-                  <font-awesome-icon :icon="['fas', 'cloud-upload-alt']" /> Server Write : {{ detail.serverWriteBytes | currency }} bytes
+                <!--
+                <div class="name">
+                  <font-awesome-icon :icon="['fas', 'bezier-curve']" /> {{ selectedState.listen }}
+                  , <font-awesome-icon :icon="['fas', 'cloud']" /> {{selectedState.host}}:{{selectedState.port}}
+                  , <font-awesome-icon :icon="['fas', 'link']" /> {{ selectedState.count | currency }}
                 </div>
+                <div class="labels">
+                  <div class="bytes">{{ selectedState.bytes.clientWriteBytes | prettyBytes }}</div>
+                  <div class="bytes">{{ selectedState.bytes.serverReadBytes | prettyBytes }}</div>
+                </div>
+                <div>
+                  <b-icon icon="display" font-scale="2" class="node-icon align-middle"></b-icon>
+                  <b-icon icon="arrow-left-right" font-scale="2" class="node-icon align-middle"></b-icon>
+                  <b-icon icon="terminal" font-scale="2" class="node-icon align-middle"></b-icon>
+                  <b-icon icon="arrow-left-right" font-scale="2" class="node-icon align-middle"></b-icon>
+                  <b-icon icon="cloud" font-scale="2" class="node-icon align-middle"></b-icon>
+                </div>
+                <div class="labels">
+                  <div class="bytes">{{ selectedState.bytes.clientReadBytes | prettyBytes }}</div>
+                  <div class="bytes">{{ selectedState.bytes.serverWriteBytes | prettyBytes }}</div>
+                </div>
+                -->
               </div>
+
+<!--
+                <div class="nodes">
+                  <div class="title name"><font-awesome-icon :icon="['fas', 'link']" /> aaabbbccd : 8081</div>
+                  <div class="labels">
+                    <div class="bytes">{{ 13123123 | prettyBytes }}</div>
+                    <div class="bytes">{{ 234234234 | prettyBytes }}</div>
+                  </div>
+                  <div>
+                    <b-icon icon="display" font-scale="2" class="node-icon align-middle"></b-icon>
+                    <b-icon icon="arrow-left-right" font-scale="2" class="node-icon align-middle"></b-icon>
+                    <b-icon icon="terminal" font-scale="2" class="node-icon align-middle"></b-icon>
+                    <b-icon icon="arrow-left-right" font-scale="2" class="node-icon align-middle"></b-icon>
+                    <b-icon icon="cloud" font-scale="2" class="node-icon align-middle"></b-icon>
+                  </div>
+                  <div class="labels">
+                    <div class="bytes">{{ 362362345 | prettyBytes }}</div>
+                    <div class="bytes">{{ 9287337 | prettyBytes }}</div>
+                  </div>
+                </div>
+                <div class="nodes">
+                  <div class="title name"><font-awesome-icon :icon="['fas', 'link']" /> aaabbbccd : 8081</div>
+                  <div class="labels">
+                    <div class="bytes">{{ 13123123 | prettyBytes }}</div>
+                    <div class="bytes">{{ 234234234 | prettyBytes }}</div>
+                  </div>
+                  <div>
+                    <b-icon icon="display" font-scale="2" class="node-icon align-middle"></b-icon>
+                    <b-icon icon="arrow-left-right" font-scale="2" class="node-icon align-middle"></b-icon>
+                    <b-icon icon="terminal" font-scale="2" class="node-icon align-middle"></b-icon>
+                    <b-icon icon="arrow-left-right" font-scale="2" class="node-icon align-middle"></b-icon>
+                    <b-icon icon="cloud" font-scale="2" class="node-icon align-middle"></b-icon>
+                  </div>
+                  <div class="labels">
+                    <div class="bytes">{{ 362362345 | prettyBytes }}</div>
+                    <div class="bytes">{{ 9287337 | prettyBytes }}</div>
+                  </div>
+                </div>
+-->
+
+              <!-- <div class="value"> -->
+                <div class="nodes" v-for="(detail, index) in selectedItem" :key="index">
+                  <div class="title name"><font-awesome-icon :icon="['fas', 'link']" /> {{ detail.address }} : {{ detail.port }}</div>
+                  <div class="labels">
+                    <div class="bytes">{{ detail.clientWriteBytes | prettyBytes }}</div>
+                    <div class="bytes">{{ detail.serverReadBytes | prettyBytes }}</div>
+                  </div>
+                  <div>
+                    <b-icon icon="display" font-scale="2" class="node-icon align-middle"></b-icon>
+                    <b-icon icon="arrow-left-right" font-scale="2" class="node-icon align-middle"></b-icon>
+                    <b-icon icon="terminal" font-scale="2" class="node-icon align-middle"></b-icon>
+                    <b-icon icon="arrow-left-right" font-scale="2" class="node-icon align-middle"></b-icon>
+                    <b-icon icon="cloud" font-scale="2" class="node-icon align-middle"></b-icon>
+                  </div>
+                  <div class="labels">
+                    <div class="bytes">{{ detail.clientReadBytes | prettyBytes }}</div>
+                    <div class="bytes">{{ detail.serverWriteBytes | prettyBytes }}</div>
+                  </div>
+                </div>
+              <!-- </div> -->
             </div>
           </b-card-body>
         </b-card>
@@ -197,9 +288,9 @@ export default {
     }, false)
   },
   mounted() {
-    if(this.autoCheck) {
-      this.handleUpdateNow();
-    }
+    // if(this.autoCheck) {
+    //   this.handleUpdateNow();
+    // }
   },
   destroyed() {
     // Destroy ipcRenderer
@@ -289,7 +380,7 @@ export default {
   bottom:0;
   width:100%;
 }
-.card-deck .card{
+.card-deck .card {
   padding-bottom:50px;
 }
 /* .card {
@@ -312,9 +403,11 @@ export default {
   border-radius: 10px;
 }
 .items > .item.selected {
-  border: 1px solid #101113;
+  color: #ffffff;
+  border: 1px dashed #ffffff;
+  background-color: rgba(128, 128, 128, 0.25);
 }
-.item .name, .details .name {
+.item .title, .details .title {
   font-weight: bold;
 }
 .item .value, .details .value {
@@ -327,5 +420,50 @@ export default {
 }
 body {
   overflow: hidden;
+}
+
+.nodes {
+  text-align: center;
+}
+.nodes.small {
+  font-size: 0.8 rem;
+}
+.nodes .title {
+  text-align: left;
+}
+.nodes .labels {
+  text-align: center;
+  display: inline-block;
+  width: 80%;
+}
+.nodes .bytes {
+  width: 48%;
+  text-align: center;
+  display: inline-block;
+}
+.nodes .node-icon {
+  width: 18%;
+  text-align: center;
+  display: inline-block;
+}
+
+.details .nodes {
+  padding: 10px;
+  border: 1px dashed #ffffff;
+  border-radius: 0;
+  border-bottom: 0;
+}
+.details .nodes .title {
+  color: #eeeeee;
+}
+.details .nodes:first-child {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+.details .nodes:last-child {
+  margin-bottom: 10px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border: 1px dashed #ffffff;
 }
 </style>

@@ -106,6 +106,16 @@ export default {
     console.log("Link : " + this.directDownloadLink);
     // ipcRenderer.send("update-check-now", "");
   },
+  watch: {
+    autoCheck : function(val) {
+      if(val) {
+        if(this.updateStep === 1) {
+          this.handleCheckUpdateNow();
+        }
+      }
+      this.autoCheck = val;
+    }
+  },
   mounted() {
     ipcRenderer.on("updater-message", (event, args) => {
       // console.log("updater-message");
@@ -186,9 +196,9 @@ export default {
   methods: {
     updateProps() {
       // console.log("updateProps...");
-      if(this.autoCheck) {
-        this.handleCheckUpdateNow();
-      }
+      // if(this.autoCheck) {
+      //   this.handleCheckUpdateNow();
+      // }
     },
     open (link) {
       this.$electron.shell.openExternal(link)

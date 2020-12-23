@@ -39,12 +39,19 @@
                 :class="{'selected': selectedIndex == index}"
                 @click.prevent.stop="setselectedIndex(index)"
               >
-                <div class="name">{{ item.listen }}, {{item.host}}:{{item.port}}</div>
+                <div class="name">
+                  {{ item.name }}<br />
+                  {{ item.listen }}, {{item.host}}:{{item.port}}
+                </div>
               </div>
             </b-card-text>
           </b-card>
           <b-card no-body>
             <b-card-body>
+              <b-row class="my-1">
+                <b-col sm="3">Name</b-col>
+                <b-col sm="9"><b-form-input type="text" name="name" v-model="selectedItem.name" /></b-col>
+              </b-row>
               <b-row class="my-1">
                 <b-col sm="3">Listen</b-col>
                 <b-col sm="9"><b-form-input type="number" name="listen" v-model="selectedItem.listen" /></b-col>
@@ -164,9 +171,9 @@ export default {
       if(index >= 0) {
         router = this.preferences.routers ? this.preferences.routers[index] : null;
       }
-      router = router ? router : {listen:0, host:"", port:0}
-      const {listen, host, port} = router;
-      this.selectedItem =  {listen, host, port};
+      router = router ? router : {name: "", listen: 0, host: "", port: 0}
+      const {name, listen, host, port} = router;
+      this.selectedItem =  {name, listen, host, port};
     },
     handleNew() {
       this.selectedIndex = -1;
@@ -177,18 +184,18 @@ export default {
         this.preferences.routers = [];
       }
 
-      const {listen, host, port} = this.selectedItem;
+      const {name, listen, host, port} = this.selectedItem;
       if(this.selectedIndex >= 0) {
         
         this.preferences.routers.splice(
           this.selectedIndex,
           1, {
-            listen, host, port
+            name, listen, host, port
           }
         );
       } else {
         this.preferences.routers.push({
-          listen, host, port
+          name, listen, host, port
         });
       }
       this.selectedIndex = -1;
@@ -229,8 +236,8 @@ export default {
   background-color: transparent;
 } */
 .items {
-  height: 230px;
-  max-height: 230px;
+  height: 280px;
+  max-height: 280px;
   padding: 10px;
 }
 .items > .item {
