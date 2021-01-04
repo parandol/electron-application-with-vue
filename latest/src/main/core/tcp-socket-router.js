@@ -14,9 +14,9 @@ class TCPRouterClient extends TCPSocketClient {
     handleData(data) {
         this.remote.write(data);
         try {
-            this.emit("log", "Client Socket Read : " + this.socket.bytesRead + ", Writtern : " + this.socket.bytesWritten);
-            console.log("Client Read : %d, Writtern : %d ", this.socket.bytesRead, this.socket.bytesWritten);
-            console.log("Remote Read : %d, Writtern : %d ", this.remote.bytesRead, this.remote.bytesWritten);
+            // this.emit("log", "Client Socket Read : " + this.socket.bytesRead + ", Writtern : " + this.socket.bytesWritten);
+            // console.log("Client Read : %d, Writtern : %d ", this.socket.bytesRead, this.socket.bytesWritten);
+            // console.log("Remote Read : %d, Writtern : %d ", this.remote.bytesRead, this.remote.bytesWritten);
             this.emit("transfered");
         } catch(e){ }
     };
@@ -151,6 +151,7 @@ class TCPSocketRouter extends TCPSocketServer {
                 this.counts[addr]--;
             }
 
+            const uuid = clientSocket.uuid;
             this.connections[uuid] = null;
             delete this.connections[uuid];
 
@@ -162,8 +163,8 @@ class TCPSocketRouter extends TCPSocketServer {
 
     handleData(client, data) {
         try {
-            this.emit("log", "Server Socket Read : " + client.bytesRead + ", Writtern : " + client.bytesWritten);
-            console.log("Server Socket Read : %d, Writtern : %d ", client.bytesRead, client.bytesWritten);
+            // this.emit("log", "Server Socket Read : " + client.bytesRead + ", Writtern : " + client.bytesWritten);
+            // console.log("Server Socket Read : %d, Writtern : %d ", client.bytesRead, client.bytesWritten);
         } catch(e) {}
 
         const uuid = client.uuid;
@@ -187,7 +188,7 @@ class TCPSocketRouter extends TCPSocketServer {
     print() {
         for(const key in this.counts) {
             // this.emit("log", "Client [" + key + "] : " + this.counts[key]);
-            console.log("Client [%s] : %d", key, this.counts[key]);
+            console.log("Client [%s] : %d", key, isNaN(this.counts[key]) ? 0 : this.counts[key]);
         }
         for(const key in this.connections) {
             const connection = this.connections[key];
@@ -196,7 +197,7 @@ class TCPSocketRouter extends TCPSocketServer {
                 if(connection.client && connection.server) {
                     try {
                         // this.emit("log", "Client [" + key + "], Sent : " + connection.client.bytesRead + ", Received : "+ connection.server.bytesRead);
-                        console.log("Client [%s], Sent : %d, Received : %d ", key, connection.client.bytesRead, connection.server.bytesRead);
+                        // console.log("Client [%s], Sent : %d, Received : %d ", key, connection.client.bytesRead, connection.server.bytesRead);
                     } catch(e) {}
                 // } else {
                 //   console.log("Client [%s], Received : %d, Sent : 0 ", key, connection.client.bytesWritten);
@@ -208,7 +209,7 @@ class TCPSocketRouter extends TCPSocketServer {
     count() {
         let count = 0;
         for(const key in this.counts) {
-            count += this.counts[key];
+            count += isNaN(this.counts[key]) ? 0 : this.counts[key];
         }
         return count;
     }
@@ -252,7 +253,7 @@ class TCPSocketRouter extends TCPSocketServer {
     isConnected(conn) {
         const clientSocket = conn.client;
         const serverSocket = conn.server;
-        if(!clientSocket.connected || !serverSocket.connected) {
+        if(clientSocket.disconnected || serverSocket.disconnected) {
             const addr = clientSocket.remoteAddress;
             return false;
         }

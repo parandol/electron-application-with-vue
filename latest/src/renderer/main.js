@@ -56,7 +56,14 @@ Vue.filter('prettyBytes', function (num) {
 Vue.filter('currency', function (num) {
     // jacked from: https://github.com/sindresorhus/pretty-bytes
     if (typeof num !== 'number' || isNaN(num)) {
-      throw new TypeError('Expected a number');
+      const tmp = Number.parseInt(num);
+      if (typeof tmp !== 'number' || isNaN(tmp)) {
+        // console.log(".................", tmp);
+        throw new TypeError('Expected a number');
+        // num = 0;
+      } else {
+        num = tmp;
+      }
     }
     return num.toFixed(0).replace(/(\d)(?=(\d{3})+(?:\.\d+)?$)/g, "$1,")
 });

@@ -33,7 +33,7 @@ export default (() => {
             this.win = win;
             this.prefsWindow = null;
 
-            style.parent = this.win;
+            // style.parent = this.win;
             
             this.preferences = new Preferences("kr.ejsoft.socket.router", {
                 common : {
